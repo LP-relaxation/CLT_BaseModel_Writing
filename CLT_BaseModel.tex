@@ -1,0 +1,134 @@
+\documentclass[11pt]{article}
+
+\usepackage{amssymb,amsmath}
+\usepackage{graphicx}
+\usepackage{fullpage}
+\usepackage{listings,relsize}
+\usepackage{subfig}
+\usepackage{setspace}
+\usepackage{varwidth}
+\usepackage{pdflscape}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage{algpseudocode}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{comment}
+\usepackage{hyperref}
+\usepackage[titletoc,title]{appendix}
+\usepackage[mathlines]{lineno}
+%\pagewiselinenumbers
+% extra package 
+\usepackage{framed}
+\usepackage[flushleft]{threeparttable}
+\usepackage{xcolor}
+
+\usepackage{enumerate}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\renewcommand*{\appendixname}{Appendix}%
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+\newcommand{\Keywords}[1]{\par\noindent
+{\small{\em Keywords\/}: #1}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{example}{Example}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\newtheorem{claim}{Claim}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\begin{document}
+
+\addtolength{\jot}{1em}
+
+\section*{09052024 ImmunoSEIRS Flu Mathematical Model (Work in Progress)}
+
+Note 1: I have incorporated important notation suggestions from Lauren \& Dave. \newline
+
+Note 2: for simplicity, I have dropped all subscripts $F$ because that stands for flu, and here we are exclusively discussing flu. 
+
+\begin{itemize}
+    \item $t$: time 
+    \item $a$: age group 
+    \item $A$: set of age groups
+    \item $\mathcal I := \left\{\text{H1}, \text{H3}, \text{V}\right\}$: the set of types of immunity-inducing events: infection by H1N1, infection by H3N2, and vaccination, respectively.
+    \item $\boldsymbol{O}$: $\lvert A \rvert \times \lvert \mathcal I \rvert$ matrix, where the $(a, \ell)$th element is the positive constant modeling the saturation of antibody production in individuals in age group $a$ who had immunity-inducing event $\ell$.
+\end{itemize}
+
+\textbf{Population-level immunity against \underline{infection} (derived from H1N1 infections, H3N2 infections, and vaccinations respectively)}
+\begin{align}
+    \frac{dM^I_{a,H1}(t)}{dt} &= \frac{g^I_{H1} p_{H1}(t) R_a(t)}{N_a \left(1 + \sum_{\ell \in L} O_{a, \ell} M^I_{a, \ell}(t)\right)} - w^I_{H1} M^I_{a, H1}(t) \\
+    \frac{dM^I_{a,H3}(t)}{dt} &= \frac{g^I_{H3} p_{H3}(t) R_a(t)}{N_a \left(1 + \sum_{\ell \in L} O_{a, \ell} M^I_{a, \ell}(t)\right)} - w^I_{H3} M^I_{a, H3}(t) \\
+    \frac{dM^I_{a,V}(t)}{dt} &= g^I_V V(t - \tau) - w^I_V M^I_{a, V}(t)
+\end{align}
+where
+\begin{itemize}
+    \item $g^I_{H1}$: factor by which population-level immunity against infection grows after each H1N1 case that recovers
+    \item $g^I_{H3}$: factor by which population-level immunity against infection grows after each H3N2 case that recovers
+    \item $g^I_V$: factor by which population-level immunity against infection grows after each vaccination
+    \item $N_a$: total population of age group $a$
+    \item $p_{H1}(t)$, $p_{H3}(t)$: prevalence of H1N1, H3N2 respectively
+    \item $w^I_{H1}$: rate at which H1N1 infection-induced immunity against infection wanes
+    \item $w^I_{H3}$: rate at which H3N2 infection-induced immunity against infection wanes
+    \item $w^I_V$: rate at which vaccine-induced immunity against infection wanes
+    \item $V(t)$: number of vaccine doses administered at time $t$
+    \item $\tau$: delay in number of days of dose administration. \newline
+\end{itemize}
+
+\textbf{Population-level immunity against \underline{hospitalization} (derived from H1N1 infections, H3N2 infections, and vaccinations respectively)}
+\begin{align}
+    \frac{dM^H_{a,H1}(t)}{dt} &= \frac{g^H_{H1} p_{H1}(t) R_a(t)}{N_a \left(1 + \sum_{\ell \in L} O_{a, \ell} M^H_{a, \ell}(t)\right)} - w^H_{H1} M^H_{a, H1}(t) \\
+    \frac{dM^H_{a,H3}(t)}{dt} &= \frac{g^H_{H3} p_{H3}(t) R_a(t)}{N_a \left(1 + \sum_{\ell \in L} O_{a, \ell} M^H_{a, \ell}(t)\right)} - w^H_{H3} M^H_{a, H3}(t) \\
+    \frac{dM^H_{a,V}(t)}{dt} &= g^H_V V(t) - w^H_V M^H_{a, V}(t)
+\end{align}
+where
+\begin{itemize}
+    \item $p_{H1}(t)$, $p_{H3}(t)$, $V(t)$, $\tau$: see above
+    \item $g^H_{H1}$: factor by which population-level immunity against hospitalization grows after each H1N1 case that recovers
+    \item $g^H_{H3}$: factor by which population-level immunity against hospitalization grows after each H3N2 case that recovers
+    \item $g^H_V$: factor by which population-level immunity against hospitalization grows after each vaccination
+    \item $w^H_{H1}$: rate at which H1N1 infection-induced immunity against hospitalization wanes
+    \item $w^H_{H3}$: rate at which H3N2 infection-induced immunity against hospitalization wanes
+    \item $w^H_V$: rate at which vaccine-induced immunity against hospitalization wanes
+    \newline
+\end{itemize}
+
+\textbf{SEIHRD equations}
+\begin{align}
+\frac{dS_a(t)}{dt} &= -\underbrace{S_a(t) \cdot \sum_{a^\prime \in A} \frac{\beta(t) \phi_{a, a^\prime}(t) I_{a^\prime}(t)}{N_{a^\prime} (1 + \boldsymbol{K_a^I(p)}^T \boldsymbol{M_a^I})}}_{\text{new exposed}} + \underbrace{\eta R_a(t)}_{\text{new susceptible}} \\
+\frac{dE_a(t)}{dt} &= \underbrace{S_a(t) \cdot \sum_{a^\prime \in A} \frac{\beta(t) \phi_{a, a^\prime}(t) I_{a^\prime}(t)}{N_{a^\prime} (1 + \boldsymbol{K_a^I(p)}^T\boldsymbol{M_a^I})}}_{\text{new exposed}} - \underbrace{\sigma E_a(t)}_{\text{new infected}} \\
+\frac{dI_a(t)}{dt} &= \underbrace{\sigma E_a(t)}_{\text{new infected}} - \underbrace{(1-\tilde{\mu}_a)\gamma I_a(t)}_{\text{new recovered from home}} - \underbrace{\frac{\zeta \tilde{\mu}_a I_a(t)}{1 + \boldsymbol{K_a^H(p)}^T \boldsymbol{M_a^H}}}_{\text{new hospitalized}} \\
+\frac{dH_a(t)}{dt} &= \underbrace{\frac{\zeta \tilde{\mu}_a I_a(t)}{1 + \boldsymbol{K_a^H(p)}^T \boldsymbol{M_a^H}}}_{\text{new hospitalized}} - \underbrace{(1-\tilde{\nu}_a)\gamma_H H_a(t)}_{\text{new recovered from hospital}} - \underbrace{\frac{\pi \tilde{\nu}_a H_a(t)}{1 + \boldsymbol{K_a^D(p)}^T\boldsymbol{M_a^H}}}_{\text{new dead}} \\
+\frac{dR_a(t)}{dt} &= \underbrace{(1-\tilde{\mu}_a) \gamma I_a(t)}_{\text{new recovered from home}} + \underbrace{(1-\tilde{\nu}_a)\gamma_H H_a(t)}_{\text{new recovered from hospital}} - \underbrace{\eta R_a(t)}_{\text{new susceptible}} \\
+\frac{dD_a(t)}{dt} &= \underbrace{\frac{\pi \tilde{\nu}_a H_a(t)}{1 + \boldsymbol{K_a^D(p)}^T\boldsymbol{M_a^H}}}_{\text{new dead}}
+\end{align}
+where
+\begin{itemize}
+\item $\beta(t) = \beta_0 (1 + q(t))$: time-dependent transmission rate
+\item $q(t)$: seasonality parameter based on absolute humidity
+\item $\phi_{a, a^\prime}(t)$: mixing rates between age groups based on contact matrices
+\item $\gamma, \gamma_H$: recovery rates for infected and hospital compartments respectively
+\item $\sigma$: infection rate (exposed to infected transition rate)
+\item $[\tilde{\mu}_a]$, where $\tilde{\mu}_a = \frac{\mu_a\gamma}{\zeta - \mu_a(\zeta-\gamma)}$: adjusted hospitalization rate vector (as in, proportion hospitalized based on age group) actually used in model -- adjustment necessary to ensure actual proportion hospitalized recapitulates $[\mu_a]$
+\item $[\mu_a]$: hospitalization rate vector (as in, proportion hospitalized based on age group)
+\item $\zeta$: hospitalization rate (infected to hospital transition rate)
+\item$[\tilde{\nu}_a]$, where $\tilde{\nu}_a = \frac{\nu_a\gamma_H}{\pi - \nu_a(\zeta-\gamma_H)}$: adjusted hospitalization rate vector (as in, proportion hospitalized based on age group) actually used in model -- adjustment necessary to ensure actual proportion hospitalized recapitulates $[\nu_a]$
+\item $[\nu_a]$: in-hospital mortality rate vector (as in, proportion who die based on age group)
+\item $\pi$: death rate from hospital
+\item $\eta$: rate at which recovered individuals become susceptible
+\item The following are all $\lvert A \rvert \times \lvert \mathcal I \rvert$ matrices
+\begin{itemize}
+\item $\boldsymbol{K^I(p)} = [K^I_{H1}(p_{H1}), K^I_{H3}(p_{H3}), K^I_{V}]$: reduction in infection risk from given immunity-inducing event
+\item $\boldsymbol{K^H(p)} = [K^H_{H1}(p_{H1}), K^H_{H3}(p_{H3}), K^H_{V}]$: reduction in hospitalization risk from given immunity-inducing event
+\item $\boldsymbol{K^D(p)} = [K^D_{H1}(p_{H1}), K^D_{H3}(p_{H3}), K^D_{V}]$: reduction in death risk from given immunity-inducing event
+\item $\boldsymbol{M^I} = \boldsymbol{M^I}(t) = [M^I_{H1}(t), M^I_{H3}(t), M^I_{V}(t)]$: population-level immunity from infection (induced by H1 infection, H3 infection, vaccination respectively)
+\item $\boldsymbol{M^H} = \boldsymbol{M^H}(t) = [M^H_{H1}(t), M^H_{H3}(t), M^H_{V}(t)]$: population-level immunity from hospitalization (induced by H1 infection, H3 infection, vaccination respectively)
+\end{itemize}
+\end{itemize}
+\end{document}
